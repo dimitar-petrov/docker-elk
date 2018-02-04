@@ -6,7 +6,8 @@ services:
     build:
       context: elasticsearch/
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - /srv/elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - /srv/elk/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -19,10 +20,12 @@ services:
     build:
       context: logstash/
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - /srv/elk/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - /srv/elk/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+      - /srv/elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
       - "5000:5000"
+      - "12201:12201/udp"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
